@@ -1,0 +1,50 @@
+라벨인코더
+Do you like your degree?
+Gender
+Certification Course
+part-time job
+
+
+수치화 할 데이터.
+
+Travelling Time 
+['0 - 30 minutes',
+ '30 - 60 minutes',
+ '1 - 1.30 hour',
+ '1.30 - 2 hour',
+ '2 - 2.30 hour',
+ '2.30 - 3 hour',
+ 'more than 3 hour']
+7
+
+social medai & video
+['0 Minute',
+ '1 - 30 Minute',
+ '30 - 60 Minute',
+ '1 - 1.30 hour',
+ '1.30 - 2 hour',
+ 'More than 2 hour']
+6
+
+daily studing time
+['0 - 30 minute',
+ '30 - 60 minute',
+ '1 - 2 Hour',
+ '2 - 3 hour',
+ '3 - 4 hour',
+ 'More Than 4 hour']
+6
+
+Financial Status
+['Awful', 'Bad', 'good', 'Fabulous']
+
+Stress Level
+['Awful', 'Bad', 'Good', 'fabulous']
+
+
+원핫인코딩
+['B.com Accounting and Finance ', 'B.com ISM', 'BCA', 'Commerce']
+['Cinema', 'Reading books', 'Sports', 'Video Games']
+['Anytime', 'Morning', 'Night']
+
+Department, hobbies, prefer to study in 순서
