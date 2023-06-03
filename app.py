@@ -17,6 +17,10 @@ def main():
     '취미' : ['영화', '책읽기', '운동', '비디오게임'],
     '공부 시간대' : ['아무때나', '아침', '저녁']
     }
+    label_list = ['자격증', '성별', '학위만족도', '아르바이트 여부']
+    onehot_list = ['학과', '취미', '공부 시간대']
+    int_list = ['공부시간', '미디어 이용시간', '왕복통학시간', '스트레스 지수', '자산상황']
+    normal_list = ['신장(cm)', '몸무게(kg)', '10살 성적', '12살 성적', '대학성적', '희망연봉', '학위기반 취업고려(%)']
 
     if choise == menu[0]:
         st.header('개요') # 데이터를 가져온 링크 적기.
@@ -86,36 +90,44 @@ def main():
         st.header('데이터 예측')
         st.text('입력 받을 데이터와 예측할 데이터를 정하면 해당 값을 출력합니다.')
         st.subheader('입력할 데이터')
-        Travelling_Time = {' ~ 0.5' : 0,
+        Travelling_Time = {
+                            ' ~ 0.5' : 0,
                             '0.5 ~ 1' : 1,
                             '1 ~ 1.5' : 2,
                             '1.5 ~ 2' : 3,
                             '2 ~ 2.5' : 4,
                             '2.5 ~ 3' : 5,
-                            '3 ~ ' : 6}
-        social_medai_video = {'0' : 0,
+                            '3 ~ ' : 6
+                            }
+        social_medai_video = {
+                            '0' : 0,
                             ' ~ 0.5' : 1,
                             '0.5 ~ 1' : 2,
                             '1 ~ 1.5' : 3,
                             '1.5 ~ 2' : 4,
-                            '2 ~ ' : 5}
-        daily_studing_time = {' ~ 0.5' : 0,
+                            '2 ~ ' : 5
+                            }
+        daily_studing_time = {
+                            ' ~ 0.5' : 0,
                             '0.5 ~ 1' : 1,
                             '1 ~ 2' : 2,
                             '2 ~ 3' : 3,
                             '3 ~ 4' : 4,
-                            '4 ~ ' : 5}
-        label_dict = {'Yes' : 1, 
+                            '4 ~ ' : 5
+                            }
+        label_dict = {
                     'No': 0, 
-                    '남자' : 1, 
-                    '여자' : 0}
+                    'Yes' : 1, 
+                    '여자' : 0,
+                    '남자' : 1 
+                    }
         Financial_Status = {'매우나쁨':0, '나쁨':1, '좋음':2, '매우좋음':3}
         Stress_Level = {'매우나쁨':0, '나쁨':1, '좋음':2, '매우좋음':3}
 
 # 한번에 선택할 수 있는 기능 만들기
         pred_choise = st.multiselect('입력받을 데이터를 정해주세요.', df.columns, max_selections=len(df.columns) - 1)
         new_data = []
-        X_choise = list(set(pred_choise) - {'학과', '취미', '공부 시간대'})
+        X_choise = list(set(pred_choise) - set(onehot_list))
         if pred_choise:
             if '자격증' in pred_choise:
                 new_data.append(label_dict[st.select_slider('자격증 보유여부를 정해주세요.', ['Yes', 'No'], value=df['자격증'].value_counts().first_valid_index())])
@@ -149,6 +161,44 @@ def main():
                 new_data.append(Financial_Status[st.selectbox('자금상태를 정해주세요.', Financial_Status.keys())])
             if '아르바이트 여부' in pred_choise:
                 new_data.append(label_dict[st.select_slider('아르바이트를 하시나요?', ['Yes', 'No'], value=df['아르바이트 여부'].value_counts().first_valid_index())])
+
+
+
+                # new_data.append(Financial_Status[st.selectbox('자금상태를 정해주세요.', Financial_Status.keys())]) # 이걸
+                # new_data.append(X_df['자산상황'].values[df[df['자산상황'] == st.selectbox('자금상태를 정해주세요.', df[pred_choise].unique())]['자산상황'].index[0]])
+
+                # 이렇게 바꿔도 될 듯.
+                # 각 컬럼마다 설명을 적은 딕셔너리를 만들고,
+                # 개요에 for문과 key()를 이용해 그 딕셔너리를 써서 설명하고,
+                
+                # 이 바로 위 코드의 for문에도 그 딕셔너리 설명값을 이용하면 코드가 확 줄어들 듯.
+
+
+                # 셀렉트 슬라이더로 정할 값 위로 보내고,
+                # 그 밑에 일반값들 정하도록.
+
+
+                # csv를 재가공하기.
+                # 컬럼 순서 변경.
+
+
+                # 가능하면 수치화한 데이터들을
+                # sorted 했을 때 값이 순서대로 이쁘게 나오도록
+                # 값도 변경해주기.
+                # ex: "1. ' ~ 0.5'" 같이 변경하기.
+
+
+                # label_value_dict를 정의해서
+                # 성별이면 [여, 남]
+                # 그 외의 라벨인코딩값은 [No, Yes]로.
+                # 기본값 가능하면 [1]을 통해서 남자와 yes를 기본값으로.
+
+
+                # X값 다 선택하면 예측 전에 한번 확인할 수 있도록 목록을 작성하고,
+                # 예측을 버튼을 눌러 하도록 하기.
+
+
+
 
             if '학과' in pred_choise:
                 sel_department = st.selectbox('학과를 정해주세요.', onehot_dict['학과'])
@@ -198,16 +248,46 @@ def main():
             regressor = LinearRegression()
             regressor.fit(X_train.values, y_train.values)
 
-            st.text('정확도') # 값 표현방식 바꾸기
+            # 정확도 선언
             y_pred = regressor.predict(X_test)
-            st.text(st.text(((y_test - y_pred) **2).mean()))
+            accuracy = round(abs((y_test - y_pred).mean()), 2)
+            per_acc =round(abs(((y_test - y_pred).mean()) * 100), 1)
 
             new_data = np.array(new_data)
-            st.write(new_data)
             new_data = new_data.reshape(1, len(new_data))
             new_data = pd.DataFrame(new_data)
-            st.text('결과') # 소수점 2자리까지.
-            st.text(regressor.predict(new_data.values)[0])
+            st.subheader('결과') # 소수점 2자리까지.
+            # 예측한거
+            answer_f = regressor.predict(new_data.values)[0]
+            per_ans = round((answer_f * 100), 1)
+            answer = round(answer_f, 2)
+
+            if y_choise in label_list:
+                label_values = ['No', 'Yes'] # 이거랑 남녀부분 위쪽에서 dict로 라벨인코더한 데이터들 값 정리할거.
+                if y_choise == '성별':
+                    label_values = ['여자', '남자']
+                if answer > 1:
+                    st.text(label_values[1])
+
+                elif answer < 0:
+                    st.text(label_values[0])
+
+                else:
+                    st.text(f'{per_ans - per_acc} ~ {per_ans + per_acc}% {label_values[round(answer_f)]}')
+
+
+            # 수치화한 데이터들 예측할 때 맥스랑 민값 정하고,
+            # 값의 의미를 알 수 있도록 표기하기.
+
+            # elif y_choise in int_list:
+            #     if answer > len():
+            #         pass # 수정할거
+
+
+            # 원핫인코딩한 값도 가능하면 도전해보기.
+            # 아마 가능할 듯?
+            else:
+                st.text(f'{y_choise}: {answer} ± {accuracy}')
         else:
             st.text('선택된 값이 없습니다.')
 
