@@ -43,10 +43,10 @@ def main():
     }
 
 
-    if choise == menu[0]:
+    if choise == menu[0]: # 개요를 좀 더 신경쓰기.
         st.header('개요') # 데이터를 가져온 링크 적기.
         st.subheader('대학생들 정보를 분석한 사이트')
-        st.dataframe(df)
+        st.dataframe(df.head(7))
         st.subheader('데이터 설명')
         for i in col_explain.keys():
             st.text(f'{i}: {col_explain[i]}')
@@ -60,22 +60,39 @@ def main():
 
 
     elif choise == menu[1]:
+        import platform # 한글폰트 사용
+        platform.platform()
+        if platform.system() == 'Windows': # 윈도우는 'Windows', 맥은 'Darwin'
+            plt.rcParams['font.family'] = 'Malgun Gothic' # Windows
+        elif platform.system() == 'Darwin':
+            plt.rcParams['font.family'] = 'AppleGothic' # Mac
+        plt.rcParams['font.size'] = 15 # 글자 크기
+        plt.rcParams['axes.unicode_minus'] = False # 한글 폰트 사용 시, 마이너스 글자가 깨지는 현상을 해결
+
+        
         st.header('데이터 분석')
         st.dataframe(df)
         st.subheader('데이터의 갯수')
-        select_count = st.selectbox('데이터를 선택해주세요.', df.columns)
+        select_count = st.selectbox('데이터를 선택해주세요.', set(df.columns) - set(normal_list))
         # 데이터 종류 제한하고, 간격 조정하기
         fig = plt.figure()
-        sns.countplot(data=df, x = select_count)
+        if select_count in int_list:
+            sns.countplot(data=df[df[select_count]], x = select_count)
+        else:
+            sns.countplot(data=df, x = select_count)
         st.pyplot(fig)
 
         st.subheader('상관관계')
         df_corr = onehot_df.corr()
+        fig = plt.figure()
+        plt.title('간략한 상관관계(%)')
+        sns.heatmap(data=df.corr(numeric_only=True).loc[:, :] * 100, annot=True, vmin=-100, vmax=100, cmap='coolwarm', fmt='.1f', linewidths=1)
+        st.pyplot(fig)
         for i in onehot_df.columns:
             df_corr.loc[abs(df_corr[i]) < 0.1, i] = np.NaN
 
         dict_key = None
-        sel_corr = st.selectbox('상관관계를 볼 데이터를 선택해주세요.', df.columns)
+        sel_corr = st.selectbox('자세한 상관관계를 볼 데이터를 선택해주세요.', df.columns)
         if sel_corr in onehot_dict.keys():
             dict_key = sel_corr
             sel_corr = st.selectbox('값을 선택해주세요.', onehot_dict[sel_corr])
