@@ -163,6 +163,8 @@ def main():
                 new_data.append(label_dict[st.select_slider('아르바이트를 하시나요?', ['Yes', 'No'], value=df['아르바이트 여부'].value_counts().first_valid_index())])
 
 
+            st.checkbox('남자')
+
 
                 # new_data.append(Financial_Status[st.selectbox('자금상태를 정해주세요.', Financial_Status.keys())]) # 이걸
                 # new_data.append(X_df['자산상황'].values[df[df['자산상황'] == st.selectbox('자금상태를 정해주세요.', df[pred_choise].unique())]['자산상황'].index[0]])
@@ -170,6 +172,11 @@ def main():
                 # 이렇게 바꿔도 될 듯.
                 # 각 컬럼마다 설명을 적은 딕셔너리를 만들고,
                 # 개요에 for문과 key()를 이용해 그 딕셔너리를 써서 설명하고,
+                # 대충 '자격증' : '자격증 보유여부
+                # 이런식으로 해서 개요에는
+                # dict[자격증] 입니다. 같이 출력되게 함.
+                # 위 코드에서는 dict[자격증]을 선택해주세요 같이 표현.
+                # 을이랑 를을 if를 써서 구분해서 표시되도록 하기.
                 
                 # 이 바로 위 코드의 for문에도 그 딕셔너리 설명값을 이용하면 코드가 확 줄어들 듯.
 
@@ -180,6 +187,7 @@ def main():
 
                 # csv를 재가공하기.
                 # 컬럼 순서 변경.
+                # https://hogni.tistory.com/51
 
 
                 # 가능하면 수치화한 데이터들을
@@ -238,6 +246,8 @@ def main():
             y_choise = st.selectbox('예측할 데이터를 선택해주세요.', set(df.columns) - set(pred_choise) - {'학과', '취미', '공부 시간대'})
 
             X = X_df[X_choise]
+            st.write(X_choise)
+            st.text(type(X_choise))
             y = X_df[y_choise]
 
 
