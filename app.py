@@ -3,308 +3,286 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
+# 시간있으면 가능한 리스트들 다 넘파이로 바꾸기.
 
 def main():
-    st.title('학생 행동 분석')
+    st.title('대학생 행동 분석 앱')
 
-    df = pd.read_csv('data/Student_Behaviour_kor.csv')
-    menu = ['개요', '데이터 분석', '데이터 예측', '데이터 분류']
+    df = pd.read_csv('data/Student_Behaviour_kor_sort.csv')
+    menu = ['개요', '데이터 분석', '데이터 예측']
     choise = st.sidebar.selectbox('목록', menu)
-    df_onehot = pd.read_csv('data/Student_Behaviour_kor3.csv')
-    X_df = pd.read_csv('data/Student_Behaviour_kor3_1.csv')
+    onehot_df = pd.read_csv('data/Student_Behaviour_kor2.csv')
     onehot_dict = {
     '학과' : ['B.com Accounting and Finance', 'B.com ISM', 'BCA', 'Commerce'],
     '취미' : ['영화', '책읽기', '운동', '비디오게임'],
     '공부 시간대' : ['아무때나', '아침', '저녁']
     }
-    label_list = ['자격증', '성별', '학위만족도', '아르바이트 여부']
-    onehot_list = ['학과', '취미', '공부 시간대']
+    label_list = ['성별', '자격증', '학위만족도', '아르바이트 여부']
     int_list = ['공부시간', '미디어 이용시간', '왕복통학시간', '스트레스 지수', '자산상황']
     normal_list = ['신장(cm)', '몸무게(kg)', '10살 성적', '12살 성적', '대학성적', '희망연봉', '학위기반 취업고려(%)']
+    df1 = df[:][:]
+    func1 = lambda x : x[4:-1]
+    for i in int_list:
+        df1[i] = df1[i].apply(func1)
+    check = st.checkbox('데이터프레임 보기')
+    if check:
+        st.dataframe(df1)
+        st.text('234 rows × 27 columns')
+    col_explain = {
+        '자격증' : '자격증 보유여부',
+        '성별' : '성별',
+        '학과' : '학과',
+        '신장(cm)' : '키',
+        '몸무게(kg)' : '몸무게',
+        '10살 성적' : '10살때의 성적',
+        '12살 성적' : '12살때의 성적',
+        '대학성적' : '대학에서의 성적',
+        '취미' : '취미',
+        '공부시간' : '하루 공부시간',
+        '공부 시간대' : '공부하는 시간대',
+        '희망연봉' : '원하는 연봉($)',
+        '학위만족도' : '학위에 대한 만족도',
+        '학위기반 취업고려(%)' : '학위를 바탕으로 직업을 추구하려는 의지가 얼마나 되는지',
+        '미디어 이용시간' : '소셜미디어와 영상시청에 하루에 할당하는 시간',
+        '왕복통학시간' : '왕복 통학시간',
+        '스트레스 지수' : '스트레스 지수',
+        '자산상황' : '자금의 정도',
+        '아르바이트 여부' : '아르바이트 활동을 하는지'
+    }
 
     if choise == menu[0]:
-        st.header('개요') # 데이터를 가져온 링크 적기.
-        st.subheader('대학생들 정보를 분석한 사이트')
-        st.dataframe(df.head())
-        st.text("""
-        Certification Course : 자격증 보유여부
-        Gender : 성별
-        Department : 학과
-        Height(CM) : 키
-        Weight(KG) : 몸무게
-        10살 성적 : 10살때의 성적
-        12살 성적 : 12살때의 성적
-        대학성적 : 대학성적
-        hobbies : 취미
-        daily study : 하루 공부시간
-        prefer to study in : 공부하는 시간대
-        salary expectation : 원하는 연봉
-        Do you like your degree : 학위 만족도
-        willingness to pursue a career based on their degree(%) : 학위를 바탕으로 직업을 추구하려는 의지
-        social medai & video : 소셜미디어와 영상시청에 하루에 할당하는 시간
-        Travelling Time : 등교시간(왕복)
-        stress Level : 스트레스 지수
-        Financial Status : 자금 정도
-        part-time job : 아르바이트 활동여부
-        """)
+        if not check:
+            st.image('data/img.jpg')
+        st.subheader('개요')
+        st.text('대학생들의 데이터를 분석하고, 데이터를 선택해 예측합니다.')
+        st.subheader('목차')
+        st.text('''
+        - 데이터의 값 설명
+        - 데이터 값 확인
+        - 데이터 시각화 및 분석
+        - 여러 데이터 예측하기
+        ''')
+        
         st.subheader('출처')
         st.text('kaggle Student Behavior')
         st.text('https://www.kaggle.com/datasets/gunapro/student-behavior?resource=download')
 
-    if choise == menu[1]:
+
+    elif choise == menu[1]:
+        import platform
+        platform.platform()
+        if platform.system() == 'Windows':
+            plt.rcParams['font.family'] = 'Malgun Gothic'
+        elif platform.system() == 'Darwin':
+            plt.rcParams['font.family'] = 'AppleGothic'
+        plt.rcParams['font.size'] = 15
+        plt.rcParams['axes.unicode_minus'] = False
+
+        calculator = {
+            '값의 종류' : 'df1[i].unique()',
+            '값의 종류 수' : 'df1[i].nunique()',
+            '최댓값' : 'df1[i].max()',
+            '최솟값' : 'df1[i].min()',
+            '평균' : 'round(df1[i].mean(), 1)',
+            '중앙값' : 'df1[i].median()'
+        }
         st.header('데이터 분석')
-        st.dataframe(df)
+        if check:
+            st.subheader('데이터 설명')
+            for i in col_explain.keys():
+                st.text(f'{i}: {col_explain[i]}')
+
+        st.subheader('데이터 값')
+        select_calcul = st.radio('보고싶은 값을 선택해주세요.', calculator.keys())
+        for i in df1.columns:
+            if df1[i].dtype != object and select_calcul not in list(calculator.keys())[:2] or (df1[i].dtype == object and select_calcul in list(calculator.keys())[:2]):
+                st.text(f'{i}의 {select_calcul}: {eval(calculator[select_calcul])}')
+
         st.subheader('데이터의 갯수')
-        select_count = st.selectbox('데이터를 선택해주세요.', df.columns)
-        # 데이터 종류 제한하고, 간격 조정하기
+        select_count = st.selectbox('데이터를 선택해주세요.', set(df1.columns) - set(normal_list[:-1]))
+        fig = plt.figure(figsize=(10, 4))
+        plt.subplot(1, 2, 1)
+
+        ax = sns.countplot(data=df1[select_count].sort_values(ascending=False).to_frame(), x = select_count)
+
+        if select_count.endswith('시간') or select_count == '학과':
+            plt.xticks(fontsize=13)
+            plt.xticks(rotation=17)
+        ax.set(xlabel=None)
+        plt.subplot(1, 2, 2)
+        explode = [0.05] * df1[select_count].nunique()
+        if select_count == normal_list[-1]:
+            plt.pie(df1[select_count].sort_values().value_counts(sort=False).values, labels=df1[select_count].sort_values().unique(), explode=explode)
+        else:
+            plt.pie(df1[select_count].sort_values(ascending=False).value_counts(sort=False).values, labels=df1[select_count].sort_values(ascending=False).unique(), explode=explode, startangle=-78)
+        plt.suptitle(select_count)
+        st.pyplot(fig)
+        st.dataframe(df[select_count].sort_values().value_counts(sort=False))
+
+        st.subheader('산점도')
+        plt_li = []
+        plt_li.append(st.selectbox('x축을 선택해주세요.', set(normal_list[:-2])))
+        plt_li.append(st.selectbox('y축을 선택해주세요.', set(normal_list[:-2]) - {plt_li[0]}))
+        if st.checkbox('데이터를 분류하여 산점도를 표현하시겠습니까?'):
+            plt_li.append(st.selectbox('분류할 기준을 선택해주세요.', set(label_list)))
+
         fig = plt.figure()
-        sns.countplot(data=df, x = select_count)
+        if len(plt_li) == 3:
+            plt.scatter(df[plt_li[0]], df[plt_li[1]], s=500, c=onehot_df[plt_li[2]], cmap='viridis', alpha=0.25)
+            plt.colorbar(ticks=[], label=f'{sorted(df1[plt_li[2]].unique())[0]}             ~             {sorted(df1[plt_li[2]].unique())[1]}', shrink=0.5, orientation='horizontal')
+        else:
+            plt.scatter(df[plt_li[0]], df[plt_li[1]], s=500, cmap='viridis', alpha=0.4)
+        plt.xlabel(plt_li[0])
+        plt.ylabel(plt_li[1])
         st.pyplot(fig)
 
         st.subheader('상관관계')
-        df_corr = df_onehot.corr()
-        for i in df_onehot.columns:
-            df_corr.loc[abs(df_corr[i]) < 0.1, i] = np.NaN
-
+        df1_corr = onehot_df.corr()
+        fig = plt.figure()
+        plt.title('간략한 상관관계(%)')
+        sns.heatmap(data=df1.corr(numeric_only=True).loc[:, :] * 100, annot=True, vmin=-100, vmax=100, cmap='coolwarm', fmt='.1f', linewidths=1)
+        st.pyplot(fig)
+        for i in onehot_df.columns:
+            df1_corr.loc[abs(df1_corr[i]) < 0.1, i] = np.NaN
         dict_key = None
-        sel_corr = st.selectbox('상관관계를 볼 데이터를 선택해주세요.', df.columns)
+        sel_corr = st.selectbox('자세한 상관관계를 볼 데이터를 선택해주세요.', df1.columns)
         if sel_corr in onehot_dict.keys():
             dict_key = sel_corr
             sel_corr = st.selectbox('값을 선택해주세요.', onehot_dict[sel_corr])
-
-        df_sel_corr = (df_corr[sel_corr].dropna() * 100)
-        if len(df_sel_corr.keys()) == 1:
+        df1_sel_corr = (df1_corr[sel_corr].dropna() * 100)
+        if len(df1_sel_corr.keys()) == 1:
             st.text('관계 있는 데이터가 없습니다.')
         else:
-            for i in df_sel_corr.sort_values(ascending=False).keys()[1:]:
+            for i in df1_sel_corr.sort_values(ascending=False).keys()[1:]:
                 if dict_key:
                     if i in onehot_dict[dict_key]:
                         continue
-                if df_sel_corr[i] > 0:
-                    st.text(f"'{i}'값과 {int(df_sel_corr[i])}% 비례관계")
+                if df1_sel_corr[i] > 0:
+                    st.text(f"'{i}'값과 {int(df1_sel_corr[i])}% 비례관계")
                 else:
-                    st.text(f"'{i}'값과 {int(abs(df_sel_corr[i]))}% 반비례관계")
+                    st.text(f"'{i}'값과 {int(abs(df1_sel_corr[i]))}% 반비례관계")
 
 
-    elif choise == menu[2]: # 따로 파일 만들어서 import하기
+    elif choise == menu[2]:
         st.header('데이터 예측')
-        st.text('입력 받을 데이터와 예측할 데이터를 정하면 해당 값을 출력합니다.')
+        st.text('예측할 데이터와 입력 받을 데이터를 정하면 해당 값을 출력합니다.')
+
+        st.subheader('예측할 데이터')
+        y_choise = st.selectbox('예측할 데이터를 선택해주세요.', df.columns)
+
         st.subheader('입력할 데이터')
-        Travelling_Time = {
-                            ' ~ 0.5' : 0,
-                            '0.5 ~ 1' : 1,
-                            '1 ~ 1.5' : 2,
-                            '1.5 ~ 2' : 3,
-                            '2 ~ 2.5' : 4,
-                            '2.5 ~ 3' : 5,
-                            '3 ~ ' : 6
-                            }
-        social_medai_video = {
-                            '0' : 0,
-                            ' ~ 0.5' : 1,
-                            '0.5 ~ 1' : 2,
-                            '1 ~ 1.5' : 3,
-                            '1.5 ~ 2' : 4,
-                            '2 ~ ' : 5
-                            }
-        daily_studing_time = {
-                            ' ~ 0.5' : 0,
-                            '0.5 ~ 1' : 1,
-                            '1 ~ 2' : 2,
-                            '2 ~ 3' : 3,
-                            '3 ~ 4' : 4,
-                            '4 ~ ' : 5
-                            }
-        label_dict = {
-                    'No': 0, 
-                    'Yes' : 1, 
-                    '여자' : 0,
-                    '남자' : 1 
-                    }
-        Financial_Status = {'매우나쁨':0, '나쁨':1, '좋음':2, '매우좋음':3}
-        Stress_Level = {'매우나쁨':0, '나쁨':1, '좋음':2, '매우좋음':3}
-
-# 한번에 선택할 수 있는 기능 만들기
-        pred_choise = st.multiselect('입력받을 데이터를 정해주세요.', df.columns, max_selections=len(df.columns) - 1)
-        new_data = []
-        X_choise = list(set(pred_choise) - set(onehot_list))
+        if st.checkbox('전부 선택하기'):
+            pred_choise = st.multiselect('입력받을 데이터를 정해주세요.', df.drop(y_choise, axis=1).columns, default=df.drop(y_choise, axis=1).columns.values)
+        else:
+            pred_choise = st.multiselect('입력받을 데이터를 정해주세요.', set(df.columns) - set(y_choise))
         if pred_choise:
-            if '자격증' in pred_choise:
-                new_data.append(label_dict[st.select_slider('자격증 보유여부를 정해주세요.', ['Yes', 'No'], value=df['자격증'].value_counts().first_valid_index())])
-            if '성별' in pred_choise:
-                new_data.append(label_dict[st.select_slider('성별을 정해주세요.', ['남자', '여자'], value=df['성별'].value_counts().first_valid_index())])
-            if '신장(cm)' in pred_choise:
-                new_data.append(st.number_input('키를 입력해주세요.', min_value=0, max_value=250, value=int(df['신장(cm)'].mean())))
-            if '몸무게(kg)' in pred_choise:
-                new_data.append(st.number_input('몸무게를 입력해주세요.', min_value=0, max_value=250, value=int(df['몸무게(kg)'].mean())))
-            if '10살 성적' in pred_choise:
-                new_data.append(st.number_input('10살 때의 성적을 입력해주세요.', min_value=0, max_value=100, value=int(df['10살 성적'].mean())))
-            if '12살 성적' in pred_choise:
-                new_data.append(st.number_input('12살 때의 성적을 입력해주세요.', min_value=0, max_value=100, value=int(df['12살 성적'].mean())))
-            if '대학성적' in pred_choise:
-                new_data.append(st.number_input('대학생 때의 성적을 입력해주세요.', min_value=0, max_value=100, value=int(df['대학성적'].mean())))
-            if '공부시간' in pred_choise:
-                new_data.append(daily_studing_time[st.selectbox('하루 공부시간을 정해주세요.', daily_studing_time.keys())])
-            if '희망연봉' in pred_choise:
-                new_data.append(st.number_input('원하는 연봉($)을 정해주세요.', min_value=0, value=int(df['희망연봉'].median())))
-            if '학위만족도' in pred_choise:
-                new_data.append(label_dict[st.select_slider('학력이 마음에 드시나요?', ['Yes', 'No'], value=df['학위만족도'].value_counts().first_valid_index())])
-            if '학위기반 취업고려(%)' in pred_choise:
-                new_data.append(st.number_input('학위에 따라 경력을 추구하려는 의지(%)를 입력해주세요.', min_value=0, max_value=100, value=int(df['학위기반 취업고려(%)'].mean())))
-            if '미디어 이용시간' in pred_choise:
-                new_data.append(social_medai_video[st.selectbox('소셜미디어와 영상시청에 하루에 할당하는 시간을 정해주세요.', social_medai_video.keys())])
-            if '왕복통학시간' in pred_choise:
-                new_data.append(Travelling_Time[st.selectbox('등교시간(왕복)을 정해주세요.', Travelling_Time.keys())])
-            if '스트레스 지수' in pred_choise:
-                new_data.append(Stress_Level[st.selectbox('스트레스 레벨을 정해주세요.', Stress_Level.keys())])
-            if '자산상황' in pred_choise:
-                new_data.append(Financial_Status[st.selectbox('자금상태를 정해주세요.', Financial_Status.keys())])
-            if '아르바이트 여부' in pred_choise:
-                new_data.append(label_dict[st.select_slider('아르바이트를 하시나요?', ['Yes', 'No'], value=df['아르바이트 여부'].value_counts().first_valid_index())])
+            new_data = []
+            X_choise = []
 
-
-            st.checkbox('남자')
-
-
-                # new_data.append(Financial_Status[st.selectbox('자금상태를 정해주세요.', Financial_Status.keys())]) # 이걸
-                # new_data.append(X_df['자산상황'].values[df[df['자산상황'] == st.selectbox('자금상태를 정해주세요.', df[pred_choise].unique())]['자산상황'].index[0]])
-
-                # 이렇게 바꿔도 될 듯.
-                # 각 컬럼마다 설명을 적은 딕셔너리를 만들고,
-                # 개요에 for문과 key()를 이용해 그 딕셔너리를 써서 설명하고,
-                # 대충 '자격증' : '자격증 보유여부
-                # 이런식으로 해서 개요에는
-                # dict[자격증] 입니다. 같이 출력되게 함.
-                # 위 코드에서는 dict[자격증]을 선택해주세요 같이 표현.
-                # 을이랑 를을 if를 써서 구분해서 표시되도록 하기.
-                
-                # 이 바로 위 코드의 for문에도 그 딕셔너리 설명값을 이용하면 코드가 확 줄어들 듯.
-
-
-                # 셀렉트 슬라이더로 정할 값 위로 보내고,
-                # 그 밑에 일반값들 정하도록.
-
-
-                # csv를 재가공하기.
-                # 컬럼 순서 변경.
-                # https://hogni.tistory.com/51
-
-
-                # 가능하면 수치화한 데이터들을
-                # sorted 했을 때 값이 순서대로 이쁘게 나오도록
-                # 값도 변경해주기.
-                # ex: "1. ' ~ 0.5'" 같이 변경하기.
-
-
-                # label_value_dict를 정의해서
-                # 성별이면 [여, 남]
-                # 그 외의 라벨인코딩값은 [No, Yes]로.
-                # 기본값 가능하면 [1]을 통해서 남자와 yes를 기본값으로.
-
-
-                # X값 다 선택하면 예측 전에 한번 확인할 수 있도록 목록을 작성하고,
-                # 예측을 버튼을 눌러 하도록 하기.
-
-
-
-
-            if '학과' in pred_choise:
-                sel_department = st.selectbox('학과를 정해주세요.', onehot_dict['학과'])
-                if sel_department == 'B.com Accounting and Finance':
-                    new_data.extend([1, 0, 0])
-                elif sel_department == 'B.com ISM':
-                    new_data.extend([0, 1, 0])
-                elif sel_department == 'BCA':
-                    new_data.extend([0, 0, 1])
-                elif sel_department == 'Commerce':
-                    new_data.extend([0, 0, 0])
-                X_choise.extend(onehot_dict['학과'][:-1])
-
-            if '취미' in pred_choise:
-                sel_hobbies = st.selectbox('취미를 정해주세요.', onehot_dict['취미'])
-                if sel_hobbies == '영화':
-                    new_data.extend([1, 0, 0])
-                elif sel_hobbies == '책읽기':
-                    new_data.extend([0, 1, 0])
-                elif sel_hobbies == '운동':
-                    new_data.extend([0, 0, 1])
-                elif sel_hobbies == '비디오게임':
-                    new_data.extend([0, 0, 0])
-                X_choise.extend(onehot_dict['취미'][:-1])
-
-            if '공부 시간대' in pred_choise:
-                sel_prefer = st.selectbox('공부하는 시간대를 정해주세요.', onehot_dict['공부 시간대'])
-                if sel_prefer == '아무때나':
-                    new_data.extend([1, 0])
-                elif sel_prefer == '아침':
-                    new_data.extend([0, 1])
-                elif sel_prefer == '저녁':
-                    new_data.extend([0, 0])
-                X_choise.extend(onehot_dict['공부 시간대'][:-1])
-
-            st.subheader('예측할 데이터')
-            y_choise = st.selectbox('예측할 데이터를 선택해주세요.', set(df.columns) - set(pred_choise) - {'학과', '취미', '공부 시간대'})
-
-            X = X_df[X_choise]
-            st.write(X_choise)
-            st.text(type(X_choise))
-            y = X_df[y_choise]
-
-
-            from sklearn.model_selection import train_test_split
-            X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state=600)
-
-            from sklearn.linear_model import LinearRegression
-            regressor = LinearRegression()
-            regressor.fit(X_train.values, y_train.values)
-
-            # 정확도 선언
-            y_pred = regressor.predict(X_test)
-            accuracy = round(abs((y_test - y_pred).mean()), 2)
-            per_acc =round(abs(((y_test - y_pred).mean()) * 100), 1)
-
-            new_data = np.array(new_data)
-            new_data = new_data.reshape(1, len(new_data))
-            new_data = pd.DataFrame(new_data)
-            st.subheader('결과') # 소수점 2자리까지.
-            # 예측한거
-            answer_f = regressor.predict(new_data.values)[0]
-            per_ans = round((answer_f * 100), 1)
-            answer = round(answer_f, 2)
-
-            if y_choise in label_list:
-                label_values = ['No', 'Yes'] # 이거랑 남녀부분 위쪽에서 dict로 라벨인코더한 데이터들 값 정리할거.
-                if y_choise == '성별':
-                    label_values = ['여자', '남자']
-                if answer > 1:
-                    st.text(label_values[1])
-
-                elif answer < 0:
-                    st.text(label_values[0])
-
+            for i in pred_choise:
+                if i in normal_list:
+                    new_data.append(st.number_input(f'{add_postposition(col_explain[i])} 입력해주세요.', min_value=0, value=int(df[i].mean())))
+                elif i in int_list:
+                    new_data.append(sorted(df[i].unique()).index(st.selectbox(f'{add_postposition(col_explain[i])} 정해주세요.', sorted(df[i].unique()))))
+                elif i in label_list:
+                    new_data.append(label_def(i).index(st.select_slider(f'{add_postposition(col_explain[i])} 정해주세요.', label_def(i), value=df[i].value_counts().first_valid_index())))
                 else:
-                    st.text(f'{per_ans - per_acc} ~ {per_ans + per_acc}% {label_values[round(answer_f)]}')
+                    select_onehot = onehot_dict[i].index(st.selectbox(f'{add_postposition(i)} 정해주세요.', onehot_dict[i]))
+                    extend_list = [0 for j in range(len(onehot_dict[i]))]
+                    extend_list[select_onehot] = 1
+                    new_data.extend(extend_list)
+                if i in onehot_dict.keys():
+                    for k in onehot_dict[i]:
+                        X_choise.append(k)
+                else:
+                    X_choise.append(i)
 
+            X = onehot_df[X_choise]
+            
+            if st.button('예측결과 보기'):
+                st.subheader('결과')
+                st.text(y_choise)
+                if y_choise in onehot_dict.keys():
+                    ans_dict = {'ans' : [], 'acc' : []}
+                    for i in onehot_dict[y_choise]:
+                        j, k = reg(onehot_df, X, new_data, i)
+                        ans_dict['ans'].append(j)
+                        ans_dict['acc'].append(k)
+                    for i in range(len(onehot_dict[y_choise])):
+                        st.text(f'{onehot_dict[y_choise][i]}: {round(ans_dict["ans"][i], 3) * 100}% ± {ans_dict["acc"][i] * 100}%')
 
-            # 수치화한 데이터들 예측할 때 맥스랑 민값 정하고,
-            # 값의 의미를 알 수 있도록 표기하기.
+                elif y_choise in label_list:
+                    ans, acc = reg(onehot_df, X, new_data, y_choise)
+                    label_values = label_def(y_choise)
+                    val = label_values[1] if ans > 0.5 else label_values[0]
+                    ans_list = [round(1 - abs(ans - acc - label_values.index(val)) / (abs(ans - acc) + abs(ans - acc - 1)), 3) * 100, round(1 - abs(ans + acc - label_values.index(val)) / (abs(ans + acc) + abs(ans + acc - 1)), 3) * 100]
+                    min_per, max_per = min(ans_list), max(ans_list)
+                    over_under = [['이하', '이상'], ['이상', '이하']]
+                    if ans - acc > 1 or ans + acc < 0:
+                        st.text(val)
+                    elif ans + acc > 1 and ans - acc < 1:
+                        st.text(f'{val}가 {min_per}% {over_under[label_values.index(val)][0]}')
+                    elif ans - acc < 0 and ans + acc > 0:
+                        st.text(f'{val}가 {max_per}% {over_under[label_values.index(val)][1]}')
+                    else:
+                        st.text(f'{min_per} ~ {max_per}% {val}')
 
-            # elif y_choise in int_list:
-            #     if answer > len():
-            #         pass # 수정할거
+                elif y_choise in int_list:
+                    import math
+                    ans, acc = reg(onehot_df, X, new_data, y_choise)
+                    if y_choise in int_list[:-2]:
+                        if ans > df[y_choise].nunique() - 1:
+                            ans = df[y_choise].nunique() - 1
+                        elif ans < 0:
+                            ans = 0
+                        ans = math.ceil(ans)
+                        st.text(sorted(df1[y_choise].unique())[ans] + '시간')
+                    else:
+                        answer1, answer2 = ans - acc, ans + acc
+                        if answer1 < 0:
+                            answer1 = 0
+                        elif answer2 > df[y_choise].nunique() - 1:
+                            answer2 = df[y_choise].nunique() - 1
+                        elif math.floor(answer1) == math.ceil(answer2):
+                            st.text(sorted(df1[y_choise].unique())[answer1])
+                        else:
+                            st.text(sorted(df1[y_choise].unique())[math.floor(answer1)] + ' ~ ' + sorted(df1[y_choise].unique())[math.ceil(answer1)])
+                else:
+                    ans, acc = reg(onehot_df, X, new_data, y_choise)
+                    st.text(f'{round(ans - acc, 2)} ~ {round(ans + acc, 2)}')
 
-
-            # 원핫인코딩한 값도 가능하면 도전해보기.
-            # 아마 가능할 듯?
-            else:
-                st.text(f'{y_choise}: {answer} ± {accuracy}')
         else:
             st.text('선택된 값이 없습니다.')
 
 
+def label_def(col):
+    return ['여자', '남자'] if col == '성별' else ['No', 'Yes']
 
-    elif choise == menu[3]:
-        pass
+def reg(onehot_df, X, new_data, y_choise):
+    y = onehot_df[y_choise]
+    from sklearn.model_selection import train_test_split
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.3, random_state=600)
+    from sklearn.linear_model import LinearRegression
+    regressor = LinearRegression()
+    regressor.fit(X_train.values, y_train.values)
+    y_pred = regressor.predict(X_test)
+    accuracy = round(abs((y_test - y_pred).mean()), 2)
+    new_data = np.array(new_data)
+    new_data = new_data.reshape(1, len(new_data))
+    new_data = pd.DataFrame(new_data)
+    answer = regressor.predict(new_data.values)[0]
+    return [answer , accuracy]
+
+def is_hangul(word):
+    code = ord(word[-1])
+    if 44032 <= code <= 55203:
+        return True
+    return False
+
+def add_postposition(word):
+    if not is_hangul(word):
+        return word + '을(를)'
+    return word + ('를' if (ord(word[-1]) - 44032) % 28 == 0 else '을')
 
 if __name__ == '__main__':
     main()
