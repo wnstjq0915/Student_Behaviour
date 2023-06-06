@@ -3,6 +3,8 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
 # 시간있으면 가능한 리스트들 다 넘파이로 바꾸기.
 
 def main():
@@ -260,9 +262,7 @@ def label_def(col):
 
 def reg(onehot_df, X, new_data, y_choise):
     y = onehot_df[y_choise]
-    from sklearn.model_selection import train_test_split
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.3, random_state=600)
-    from sklearn.linear_model import LinearRegression
     regressor = LinearRegression()
     regressor.fit(X_train.values, y_train.values)
     y_pred = regressor.predict(X_test)
