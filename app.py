@@ -73,16 +73,16 @@ def main():
     elif choise == menu[1]:
         import platform
         platform.platform()
-        if platform.system() == 'Windows':
-            plt.rcParams['font.family'] = 'Malgun Gothic'
-        elif platform.system() == 'Darwin':
-            plt.rcParams['font.family'] = 'AppleGothic'
-        else:
-            # import matplotlib.font_manager as fm
-            # path = '/usr/share/fonts/NanumFont/NanumGothic.ttf'
-            # fontprop = fm.FontProperties(fname=path)
-            # plt.rcParams['font.family'] = fontprop
-            plt.rcParams['font.family'] = 'NanumGothic'
+        # if platform.system() == 'Windows':
+        plt.rcParams['font.family'] = 'Malgun Gothic'
+        # elif platform.system() == 'Darwin':
+        #     plt.rcParams['font.family'] = 'AppleGothic'
+        # else:
+        #     # import matplotlib.font_manager as fm
+        #     # path = '/usr/share/fonts/NanumFont/NanumGothic.ttf'
+        #     # fontprop = fm.FontProperties(fname=path)
+        #     # plt.rcParams['font.family'] = fontprop
+        #     plt.rcParams['font.family'] = 'NanumGothic'
         plt.rcParams['font.size'] = 15
         plt.rcParams['axes.unicode_minus'] = False
 
