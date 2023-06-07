@@ -72,8 +72,7 @@ def main():
         
         st.subheader('출처')
         st.text('kaggle Student Behavior')
-        st.text('https://www.kaggle.com/datasets/gunapro/student-behavior?resource=download')
-
+        st.markdown('https://www.kaggle.com/datasets/gunapro/student-behavior?resource=download')
 
     elif choise == menu[1]:
         import platform
@@ -97,6 +96,8 @@ def main():
         if st.checkbox('데이터프레임 보기', value=True):
             st.dataframe(df1)
             st.text('234 rows × 27 columns')
+            if st.checkbox('가공 전 데이터 보기'):
+                st.dataframe(pd.read_csv('data/Student_Behaviour.csv'))
             st.subheader('데이터 설명')
             for i in col_explain.keys():
                 st.text(f'{i}: {col_explain[i]}')
@@ -132,7 +133,7 @@ def main():
         plt_li = []
         plt_li.append(st.selectbox('x축을 선택해주세요.', set(normal_list[:-2])))
         plt_li.append(st.selectbox('y축을 선택해주세요.', set(normal_list[:-2]) - {plt_li[0]}))
-        if st.checkbox('데이터를 분류하여 산점도를 표현하시겠습니까?'):
+        if st.checkbox('데이터를 분류하여 산점도로 표현하시겠습니까?'):
             plt_li.append(st.selectbox('분류할 기준을 선택해주세요.', set(label_list)))
 
         fig = plt.figure()
@@ -145,14 +146,21 @@ def main():
         plt.ylabel(plt_li[1])
         st.pyplot(fig)
 
+        df1_corr = onehot_df[plt_li].corr()
+        ans = ['반비례', '비례']
+        if len(plt_li) == 3:
+            fig = plt.figure()
+            sns.heatmap(data=df1_corr, annot=True, vmin=-1, vmax=1, cmap='coolwarm', fmt='.2f', linewidths=0.5)
+            if st.checkbox('히트맵 보기', value=True):
+                st.pyplot(fig)
+            st.text(f'({plt_li[0]} - {plt_li[-1]}): {abs(round(df1_corr.iloc[0, -1] * 100, 1))}% {ans[int(df1_corr.iloc[0, -1] > 0)]}관계')
+        st.text(f'({plt_li[0]} - {plt_li[1]}): {abs(round(df1_corr.iloc[0, 1] * 100, 1))}% {ans[int(df1_corr.iloc[0, 1] > 0)]}관계')
+        st.text(f'({plt_li[1]} - {plt_li[-1]}): {abs(round(df1_corr.iloc[1, -1] * 100, 1))}% {ans[int(df1_corr.iloc[1, -1] > 0)]}관계')
+        
+
+
         st.subheader('상관관계')
-        df1_corr = onehot_df.corr()
-
-
-        fig = plt.figure()
-
-
-        column_list = st.multiselect('상관분석 하고싶은 데이터를 선택하세요.', df1.columns)
+        column_list = st.multiselect('상관관계를 볼 데이터를 선택하세요.', df1.columns)
         for i in onehot_dict.keys():
             if i in column_list:
                 st.text(i)
@@ -165,6 +173,9 @@ def main():
             sns.heatmap(data=onehot_df[column_list].corr(), annot=True, vmin=-1, vmax=1, cmap='coolwarm', fmt='.2f', linewidths=0.5)
             st.pyplot(fig)
 
+
+        df1_corr = onehot_df.corr()
+        fig = plt.figure()
         for i in onehot_df.columns:
             df1_corr.loc[abs(df1_corr[i]) < 0.1, i] = np.NaN
         dict_key = None
