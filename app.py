@@ -80,7 +80,8 @@ def main():
         else:
             import matplotlib.font_manager as fm
             path = '/usr/share/fonts/NanumFont/NanumGothic.ttf'
-            plt.rcParams['font.family'] = fm.FontProperties(fname=path, size=15)
+            fontprop = fm.FontProperties(fname=path)
+            plt.rcParams['font.family'] = fontprop
         plt.rcParams['font.size'] = 15
         plt.rcParams['axes.unicode_minus'] = False
 
