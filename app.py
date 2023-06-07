@@ -9,6 +9,7 @@ from sklearn.linear_model import LinearRegression
 
 def main():
     st.title('대학생 행동 분석 앱')
+    st.title('테스트')
 
     df = pd.read_csv('data/Student_Behaviour_kor_sort.csv')
     menu = ['개요', '데이터 분석', '데이터 예측']
