@@ -78,8 +78,9 @@ def main():
         elif platform.system() == 'Darwin':
             plt.rcParams['font.family'] = 'AppleGothic'
         else:
-            import matplotlib.font_manager
-            plt.rc('font', family='NanumGothic')
+            import matplotlib.font_manager as fm
+            path = '/usr/share/fonts/NanumFont/NanumGothic.ttf'
+            plt.rcParams['font.family'] = fm.FontProperties(fname=path, size=15)
         plt.rcParams['font.size'] = 15
         plt.rcParams['axes.unicode_minus'] = False
 
