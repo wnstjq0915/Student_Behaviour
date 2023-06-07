@@ -82,7 +82,7 @@ def main():
             # path = '/usr/share/fonts/NanumFont/NanumGothic.ttf'
             # fontprop = fm.FontProperties(fname=path)
             # plt.rcParams['font.family'] = fontprop
-            plt.rcParams['font.family'] = 'Malgun Gothic'
+            plt.rcParams['font.family'] = 'NanumGothic'
         plt.rcParams['font.size'] = 15
         plt.rcParams['axes.unicode_minus'] = False
 
