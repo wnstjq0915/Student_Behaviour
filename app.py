@@ -11,7 +11,7 @@ def main():
     st.title('대학생 행동 분석 앱')
 
     df = pd.read_csv('data/Student_Behaviour_kor_sort.csv')
-    menu = ['개요', '데이터 분석', '데이터 예측']
+    menu = ['개요', '데이터 분석', '데이터 예측', '결과']
 
     st.markdown("""
     <style>
@@ -153,9 +153,9 @@ def main():
             sns.heatmap(data=df1_corr, annot=True, vmin=-1, vmax=1, cmap='coolwarm', fmt='.2f', linewidths=0.5)
             if st.checkbox('히트맵 보기', value=True):
                 st.pyplot(fig)
-            st.text(f'({plt_li[0]} - {plt_li[-1]}): {abs(round(df1_corr.iloc[0, -1] * 100, 1))}% {ans[int(df1_corr.iloc[0, -1] > 0)]}관계')
-        st.text(f'({plt_li[0]} - {plt_li[1]}): {abs(round(df1_corr.iloc[0, 1] * 100, 1))}% {ans[int(df1_corr.iloc[0, 1] > 0)]}관계')
-        st.text(f'({plt_li[1]} - {plt_li[-1]}): {abs(round(df1_corr.iloc[1, -1] * 100, 1))}% {ans[int(df1_corr.iloc[1, -1] > 0)]}관계')
+            st.text(f"'{plt_li[0]}'값과 '{plt_li[-1]}'값은 {abs(round(df1_corr.iloc[0, -1] * 100, 1))}% {ans[int(df1_corr.iloc[0, -1] > 0)]}관계")
+        st.text(f"'{plt_li[0]}'값과 '{plt_li[1]}'값은 {abs(round(df1_corr.iloc[0, 1] * 100, 1))}% {ans[int(df1_corr.iloc[0, 1] > 0)]}관계")
+        st.text(f"'{plt_li[1]}'값과 '{plt_li[-1]}'값은 {abs(round(df1_corr.iloc[1, -1] * 100, 1))}% {ans[int(df1_corr.iloc[1, -1] > 0)]}관계")
         
 
 
@@ -288,7 +288,17 @@ def main():
 
         else:
             st.text('선택된 값이 없습니다.')
+    elif choise == menu[3]:
+        st.subheader('결과')
+        st.text("""
+        대체로 책읽기와 공부는 관련이 있고, 각 나잇대의 성적은 서로 밀접한 상관관계를 가지고 있다.
+        또한 성적이 높을 경우 학위에 대한 만족도 또한 높아지며,
+        자신의 학위에 만족감을 느낀 사람들은 그 학위에 관련된 곳으로 취업을 더 고려한다.
 
+        이 밖에도 남자가 여자보다 비디오게임을 많이 하는것과
+        성적에 따라 학과가 나뉘는 것,
+        그리고 비디오게임이나 운동은 성적에 부정적인 영향을 주는 것 등을 알 수 있었다.
+        """)
 
 def label_def(col):
     return ['여자', '남자'] if col == '성별' else ['No', 'Yes']
