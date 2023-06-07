@@ -147,14 +147,29 @@ def main():
 
         st.subheader('상관관계')
         df1_corr = onehot_df.corr()
+
+
         fig = plt.figure()
-        plt.title('간략한 상관관계(%)')
-        sns.heatmap(data=df1.corr(numeric_only=True).loc[:, :] * 100, annot=True, vmin=-100, vmax=100, cmap='coolwarm', fmt='.1f', linewidths=1)
-        st.pyplot(fig)
+
+
+        column_list = st.multiselect('상관분석 하고싶은 데이터를 선택하세요.', df1.columns)
+        for i in onehot_dict.keys():
+            if i in column_list:
+                st.text(i)
+                for j in onehot_dict[i]:
+                    if st.checkbox(j):
+                        column_list.append(j)
+                column_list.remove(i)
+        if len(column_list) >= 2:
+            fig = plt.figure()
+            sns.heatmap(data=onehot_df[column_list].corr(), annot=True, vmin=-1, vmax=1, cmap='coolwarm', fmt='.2f', linewidths=0.5)
+            st.pyplot(fig)
+
         for i in onehot_df.columns:
             df1_corr.loc[abs(df1_corr[i]) < 0.1, i] = np.NaN
         dict_key = None
-        sel_corr = st.selectbox('자세한 상관관계를 볼 데이터를 선택해주세요.', df1.columns)
+
+        sel_corr = st.selectbox('전체 데이터에서 자세한 상관관계를 볼 데이터를 선택해주세요.', df1.columns)
         if sel_corr in onehot_dict.keys():
             dict_key = sel_corr
             sel_corr = st.selectbox('값을 선택해주세요.', onehot_dict[sel_corr])
