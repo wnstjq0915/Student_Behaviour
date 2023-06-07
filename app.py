@@ -73,11 +73,12 @@ def main():
     elif choise == menu[1]:
         import platform
         platform.platform()
-        # if platform.system() == 'Windows':
-        plt.rcParams['font.family'] = 'Malgun Gothic'
+        if platform.system() == 'Windows':
+            plt.rcParams['font.family'] = 'Malgun Gothic'
         # elif platform.system() == 'Darwin':
         #     plt.rcParams['font.family'] = 'AppleGothic'
-        # else:
+        else:
+            plt.rcParams['font.family'] = '나눔고딕'
         #     # import matplotlib.font_manager as fm
         #     # path = '/usr/share/fonts/NanumFont/NanumGothic.ttf'
         #     # fontprop = fm.FontProperties(fname=path)
