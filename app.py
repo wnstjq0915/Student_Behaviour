@@ -12,6 +12,16 @@ def main():
 
     df = pd.read_csv('data/Student_Behaviour_kor_sort.csv')
     menu = ['개요', '데이터 분석', '데이터 예측']
+
+    st.markdown("""
+    <style>
+        [data-testid=stSidebar] {
+            background-color: #cfe1ff;
+        }
+    </style>
+    """, unsafe_allow_html=True)
+
+    st.sidebar.image('data/img2.png', use_column_width=True)
     choise = st.sidebar.selectbox('목록', menu)
     onehot_df = pd.read_csv('data/Student_Behaviour_kor2.csv')
     onehot_dict = {
@@ -26,10 +36,6 @@ def main():
     func1 = lambda x : x[4:-1]
     for i in int_list:
         df1[i] = df1[i].apply(func1)
-    check = st.checkbox('데이터프레임 보기')
-    if check:
-        st.dataframe(df1)
-        st.text('234 rows × 27 columns')
     col_explain = {
         '자격증' : '자격증 보유여부',
         '성별' : '성별',
@@ -53,8 +59,7 @@ def main():
     }
 
     if choise == menu[0]:
-        if not check:
-            st.image('data/img.jpg')
+        st.image('data/img.jpg')
         st.subheader('개요')
         st.text('대학생들의 데이터를 분석하고, 데이터를 선택해 예측합니다.')
         st.subheader('목차')
@@ -89,7 +94,9 @@ def main():
             '중앙값' : 'df1[i].median()'
         }
         st.header('데이터 분석')
-        if check:
+        if st.checkbox('데이터프레임 보기', value=True):
+            st.dataframe(df1)
+            st.text('234 rows × 27 columns')
             st.subheader('데이터 설명')
             for i in col_explain.keys():
                 st.text(f'{i}: {col_explain[i]}')
