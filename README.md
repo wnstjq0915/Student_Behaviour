@@ -19,7 +19,7 @@ https://www.kaggle.com/datasets/gunapro/student-behavior?resource=download
 ### 프로젝트 소개
 - 대학생들의 데이터를 분석하고, 각 데이터를 예측하기.
 
-### 결과
+### 프로젝트 결과
 - 대체로 책읽기와 공부는 관련이 있고, 각 나잇대의 성적은 서로 밀접한 상관관계를 가지고 있다.
 또한 성적이 높을 경우 학위에 대한 만족도 또한 높아지며,
 자신의 학위에 만족감을 느낀 사람들은 그 학위에 관련된 곳으로 취업을 더 고려한다.
@@ -27,3 +27,28 @@ https://www.kaggle.com/datasets/gunapro/student-behavior?resource=download
 - 이 밖에도 남자가 여자보다 비디오게임을 많이 하는것과
 성적에 따라 학과가 나뉘는 것,
 그리고 비디오게임이나 운동은 성적에 부정적인 영향을 주는 것 등을 알 수 있었다.
+
+### 프로젝트를 하면서 힘들었던 점과 해결방안
+#### 문제점1
+- 사용자가 멀티셀렉트에서 원핫인코딩을 한 컬럼을 선택했을 때 원핫인코딩의 값의 종류(unique())를 선택하도록 하는 것이 코드가 너무 길어져서 힘들었다.
+#### 해결방안
+- 원핫인코딩한 컬럼을 onehot_dict라는 딕셔너리로 만들어, 원핫인코딩을 한 컬럼들의 이름을 딕셔너리의 키 값으로, 그 컬럼의 값의 종류를 벨루로 받았더니  코드가 훨씬 보기 좋아졌다.
+```python
+# ex
+onehot_dict = { # 원핫인코딩을 한 값들을 딕셔너리로
+    '학과' : ['B.com Accounting and Finance', 'B.com ISM', 'BCA', 'Commerce'],
+    '취미' : ['영화', '책읽기', '운동', '비디오게임'],
+    '공부 시간대' : ['아무때나', '아침', '저녁']
+    # df['공부 시간대'].unique()를 이용할 수도 있지만 가독성을 위해 X
+    }
+choice = st.multiselect('값을 선택해주세요.', df.columns)
+if choice in onehot_dict.keys():
+  for i in onehot_dict[choice]:
+    pass
+```
+### 다음 프로젝트에 적용할 것들
+- 레이블인코딩한 값을 예측할 때는 회귀분석(regression)보다 분류(classification)가 더 좋다.
+- with를 이용한 streamlit 꾸미기.
+- 조금 더 다양한 시각화자료 써보기.
+- 결론을 쉽게 연상할 수 있는 시각화자료를 결론과 같이 올리기.
+- ec2의 메모리를 아끼기 위해 연산을 최대한 적게 하기.
