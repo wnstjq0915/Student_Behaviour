@@ -95,7 +95,7 @@ def main():
         st.header('데이터 분석')
         if st.checkbox('데이터프레임 보기', value=True):
             st.dataframe(df1)
-            st.text('234 rows × 27 columns')
+            st.text('234 rows × 19 columns')
             if st.checkbox('가공 전 데이터 보기'):
                 st.dataframe(pd.read_csv('data/Student_Behaviour.csv'))
             st.subheader('데이터 설명')
