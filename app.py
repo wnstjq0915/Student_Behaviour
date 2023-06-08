@@ -154,8 +154,8 @@ def main():
             if st.checkbox('히트맵 보기', value=True):
                 st.pyplot(fig)
             st.text(f"'{plt_li[0]}'값과 '{plt_li[-1]}'값은 {abs(round(df1_corr.iloc[0, -1] * 100, 1))}% {ans[int(df1_corr.iloc[0, -1] > 0)]}관계")
+            st.text(f"'{plt_li[1]}'값과 '{plt_li[-1]}'값은 {abs(round(df1_corr.iloc[1, -1] * 100, 1))}% {ans[int(df1_corr.iloc[1, -1] > 0)]}관계")
         st.text(f"'{plt_li[0]}'값과 '{plt_li[1]}'값은 {abs(round(df1_corr.iloc[0, 1] * 100, 1))}% {ans[int(df1_corr.iloc[0, 1] > 0)]}관계")
-        st.text(f"'{plt_li[1]}'값과 '{plt_li[-1]}'값은 {abs(round(df1_corr.iloc[1, -1] * 100, 1))}% {ans[int(df1_corr.iloc[1, -1] > 0)]}관계")
         
 
 
@@ -233,7 +233,7 @@ def main():
                     X_choise.append(i)
 
             X = onehot_df[X_choise]
-            
+
             if st.button('예측결과 보기'):
                 st.subheader('결과')
                 st.text(y_choise)
